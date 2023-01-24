@@ -6,6 +6,6 @@ router
   .route('/:id')
   .get(Users.getUserByUserId)
   .put(Users.updateUserByUserId)
-  
+  .delete(Users.deleteUserByUserId);
 
 module.exports = router;

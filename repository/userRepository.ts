@@ -12,6 +12,7 @@ class userRepository {
         if (userData) {
             return userData;
         }
+        return null;
     }
     const userData = await User.findOne({ where: { username: userId } });
     return userData;
@@ -54,25 +55,25 @@ class userRepository {
   };
 
   deleteUserByUserId = async (userId:number ) => {
-    // const transactionInstance = await sequelize.transaction();
-    // try {
-    //   await User.destroy(
-    //     { where: { id: userId } },
-    //     {
-    //       transaction: transactionInstance,
-    //     }
-    //   );
-    //   await Auth.destroy(
-    //     { where: { id: userId } },
-    //     {
-    //       transaction: transactionInstance,
-    //     }
-    //   );
-    //   await transactionInstance.commit();
-    // } catch (err) {
-    //   console.log(err);
-    //   await transactionInstance.rollback();
-    // }
+    const transactionInstance = await sequelize.transaction();
+    try {
+      await User.destroy(
+        { where: { id: userId } },
+        {
+          transaction: transactionInstance,
+        }
+      );
+      await Auth.destroy(
+        { where: { id: userId } },
+        {
+          transaction: transactionInstance,
+        }
+      );
+      await transactionInstance.commit();
+    } catch (err) {
+      console.log(err);
+      await transactionInstance.rollback();
+    }
   };
 }
 

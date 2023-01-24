@@ -1,6 +1,6 @@
 export {};
 const sequelize = require('../database/dbConnect');
-// const securePassword = require('../Utils/securePassword');
+const securePassword = require('../utils/securePassword');
 const UserRepository = require('../repository/userRepository');
 
 const Auth = require('../database/model/auth');
@@ -15,9 +15,13 @@ class authRepository {
   };
 
   signUpUser = async (authBody:any, userBody:any) => {
+    const transactionInstance = await sequelize.transaction();
     try {
       const { username, email, name } = userBody;
-      const authData = await Auth.create(authBody);
+      const { password } = authBody;
+      const authData = await Auth.create(authBody, {
+        transaction: transactionInstance,
+      });
       const { id, createdAt } = authData;
       const userInfo = {
         id,
@@ -28,9 +32,13 @@ class authRepository {
         lastModificationTime: createdAt,
         passwordLastModificationTime: createdAt,
       };
-      const userData = await User.create(userInfo);
+      const userData = await User.create(userInfo, {
+        transaction: transactionInstance,
+      });
+      await transactionInstance.commit();
       return userData;
     } catch (err) {
+      await transactionInstance.rollback();
       throw err;
     }
   };
