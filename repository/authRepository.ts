@@ -1,20 +1,20 @@
 export {};
-const sequelize = require('../database/dbConnect');
-const securePassword = require('../utils/securePassword');
-const UserRepository = require('../repository/userRepository');
+const sequelize = require("../database/dbConnect");
+const securePassword = require("../utils/securePassword");
+const UserRepository = require("../repository/userRepository");
 
-const Auth = require('../database/model/auth');
-const User = require('../database/model/user');
+const Auth = require("../database/model/auth");
+const User = require("../database/model/user");
 
 class authRepository {
-  loginUser = async (authBody:any) => {
+  loginUser = async (authBody: any) => {
     const { username } = authBody;
     const userRepository = new UserRepository();
     const userInfo = await userRepository.getUserByUsername(username);
     return userInfo;
   };
 
-  signUpUser = async (authBody:any, userBody:any) => {
+  signUpUser = async (authBody: any, userBody: any) => {
     const transactionInstance = await sequelize.transaction();
     try {
       const { username, email, name } = userBody;
@@ -50,14 +50,10 @@ class authRepository {
 
   deleteAllUsers = async () => {
     // bug
-    await User.destroy({
-      where: {},
-      truncate: true
-    });
-    await Auth.destroy({
-      where: {},
-      truncate: true
-    });
+    console.log("del1");
+    await User.destroy({ where: {} });
+    await Auth.destroy({ where: {} });
+    console.log("del2");
   };
 }
 
