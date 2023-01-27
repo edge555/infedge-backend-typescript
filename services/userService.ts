@@ -12,7 +12,7 @@ class userService {
       throw new AppError("Bad request", 400);
     }
     const userData = await this.userRepository.getUserByUserId(userId);
-    if (!userData) {
+    if (!userData) { 
       throw new AppError("No User was found with that ID", 404);
     }
 

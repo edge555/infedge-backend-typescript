@@ -3,32 +3,32 @@ const Sequelize = require('sequelize');
 const sequelize = require('../database/dbConnect');
 const Auth = require('../database/model/auth');
 const User = require('../database/model/user');
+import {UserInput, UserOutput} from '../database/model/user'
 const Op = Sequelize.Op;
 
 class userRepository {
-  getUserByUserId = async (userId:any) => {
+  getUserByUserId = async (userId:any) : Promise<UserOutput> => {
     if (Number.isInteger(parseInt(userId))) {
         const userData = await User.findByPk(parseInt(userId));
         if (userData) {
             return userData;
         }
-        return null;
     }
     const userData = await User.findOne({ where: { username: userId } });
     return userData;
 };
 
-  getUserByUsername = async (username:string) => {
+  getUserByUsername = async (username:string) : Promise<UserOutput> => {
     const userData = await Auth.findOne({ where: { username: username } });
     return userData;
   };
 
-  getAllUsers = async () => {
+  getAllUsers = async () : Promise<UserOutput[]> => {
     const userData = await User.findAll();
     return userData;
   };
 
-  getSearchedUsers = async (id:string) => {
+  getSearchedUsers = async (id:string) : Promise<UserOutput[]> => {
     
     const userData = await User.findAll({
       where: {

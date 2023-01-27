@@ -49,7 +49,7 @@ class authRepository {
   };
 
   deleteAllUsers = async () => {
-    // bug
+    
     console.log("del1");
     await User.destroy({ where: {} });
     await Auth.destroy({ where: {} });

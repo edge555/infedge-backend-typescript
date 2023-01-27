@@ -13,7 +13,7 @@ interface UserAttributes {
 
 export interface UserInput extends Optional<UserAttributes, 'id' | 'role'> {}
 
-export interface UserOuput extends Required<UserAttributes> {}
+export interface UserOutput extends Required<UserAttributes> {}
 
 class User extends Model<UserAttributes, UserInput> implements UserAttributes {
     public id!: number

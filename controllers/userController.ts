@@ -1,12 +1,12 @@
 export {};
-
+import { Request, Response, NextFunction } from "express";
 const UserService = require('../services/userService');
 
 const userService = new UserService();
 const contentNegotiate = require('../utils/sendResponse');
 
 // Retrieve all Users from the database.
-exports.getAllUsers = async (req: any, res: any, next: (arg0: unknown) => void) => {
+exports.getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const usersData = await userService.getAllUsers();
     contentNegotiate.sendResponse(req, res, 200, usersData, 'Users Found', 'Success');
@@ -16,7 +16,7 @@ exports.getAllUsers = async (req: any, res: any, next: (arg0: unknown) => void) 
 };
 
 // Find a single User with an id
-exports.getUserByUserId = async (req: { params: { id: any; }; }, res: any, next: (arg0: unknown) => void) => {
+exports.getUserByUserId = async (req: { params: { id: number; }; }, res: Response, next: NextFunction) => {
     try {
       const id = req.params.id;
       const userData = await userService.getUserByUserId(id);
@@ -39,9 +39,8 @@ exports.getUserByUserId = async (req: { params: { id: any; }; }, res: any, next:
 // };
 
 
-
 // Delete a User with the specified id
-exports.deleteUserByUserId = async (req: { params: { id: any; }; }, res: any, next: (arg0: unknown) => void) => {
+exports.deleteUserByUserId = async (req: { params: { id: number; }; }, res: Response, next: NextFunction) => {
   try {
     const id = req.params.id;
     await userService.deleteUserByUserId(id);
@@ -52,10 +51,11 @@ exports.deleteUserByUserId = async (req: { params: { id: any; }; }, res: any, ne
 };
 
 // Update a User by the id
-exports.updateUserByUserId = async (req: { params: { id: any; }; body: any; user: { id: any; }; }, res: any, next: (arg0: unknown) => void) => {
+exports.updateUserByUserId = async (req: { params: { id: number; }; body: any; user: { id: number; }; }, res: Response , next: NextFunction) => {
   try {
     const id = req.params.id;
     const userBody = req.body;
+    //edit
     userBody.lastModifierId = 1;
     const userData = await userService.updateUserByUserId(id, userBody);
     contentNegotiate.sendResponse(req, res, 200, userData, 'User Updated', 'Success');

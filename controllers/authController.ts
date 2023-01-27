@@ -8,7 +8,7 @@ const authService = new AuthService();
 exports.signUpUser = async (
   req: Request,
   res: Response,
-  next: (arg0: unknown) => void
+  next: NextFunction
 ) => {
   try {
     const { username, name, email, password } = req.body;
@@ -35,8 +35,8 @@ exports.signUpUser = async (
 // login a user
 exports.loginUser = async (
   req: { body: { username: string; password: string } },
-  res: any,
-  next: (arg0: unknown) => void
+  res: Response,
+  next: NextFunction
 ) => {
   try {
     const { username, password } = req.body;
@@ -58,14 +58,14 @@ exports.loginUser = async (
   }
 };
 
-exports.getAllAuths = async (req: any, res: { send: (arg0: any) => void }) => {
+exports.getAllAuths = async (req: Request, res: Response) => {
   const allAuthData = await authService.getAllAuths();
   res.send(allAuthData);
 };
 
 exports.deleteAllUsers = async (
-  req: any,
-  res: { send: (arg0: any) => void }
+  req: Request,
+  res: Response
 ) => {
   const delData = await authService.deleteAllUsers();
   res.send(delData);
