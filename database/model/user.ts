@@ -70,4 +70,4 @@ User.init({
   paranoid: true
 })
 
-module.exports = User;
+export default User;

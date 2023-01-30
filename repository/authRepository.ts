@@ -3,23 +3,29 @@ const sequelize = require("../database/dbConnect");
 const securePassword = require("../utils/securePassword");
 const UserRepository = require("../repository/userRepository");
 
-const Auth = require("../database/model/auth");
-const User = require("../database/model/user");
+import Auth from "../database/model/auth"
+import User from "../database/model/user"
 
 class authRepository {
-  loginUser = async (authBody: any) => {
+  loginUser = async (authBody: {username: string, password: string}) => {
     const { username } = authBody;
     const userRepository = new UserRepository();
     const userInfo = await userRepository.getUserByUsername(username);
     return userInfo;
   };
 
-  signUpUser = async (authBody: any, userBody: any) => {
+  signUpUser = async (authBody:  {username: string, password: string}, userBody: { name : string, email : string}) => {
     const transactionInstance = await sequelize.transaction();
     try {
-      const { username, email, name } = userBody;
-      const { password } = authBody;
-      const authData = await Auth.create(authBody, {
+      const { email, name } = userBody;
+      const { username, password } = authBody;
+      const hashedPassword = await securePassword(password);
+      const authInfo = {
+        username,
+        email : email,
+        password : hashedPassword,
+      }
+      const authData = await Auth.create(authInfo, {
         transaction: transactionInstance,
       });
       const { id, createdAt } = authData;
@@ -49,7 +55,6 @@ class authRepository {
   };
 
   deleteAllUsers = async () => {
-    
     console.log("del1");
     await User.destroy({ where: {} });
     await Auth.destroy({ where: {} });

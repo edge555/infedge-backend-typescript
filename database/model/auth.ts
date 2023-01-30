@@ -48,4 +48,4 @@ Auth.init({
   paranoid: true
 })
 
-module.exports = Auth;
+export default Auth;

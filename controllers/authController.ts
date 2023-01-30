@@ -6,7 +6,7 @@ const authService = new AuthService();
 
 // Create and Save a new User
 exports.signUpUser = async (
-  req: Request,
+  req: { body: { username: string, name: string, email:string, password: string } },
   res: Response,
   next: NextFunction
 ) => {
@@ -34,7 +34,7 @@ exports.signUpUser = async (
 
 // login a user
 exports.loginUser = async (
-  req: { body: { username: string; password: string } },
+  req: { body: { username: string, password: string } },
   res: Response,
   next: NextFunction
 ) => {

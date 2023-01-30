@@ -42,7 +42,9 @@ exports.getUserByUserId = async (req: { params: { id: number; }; }, res: Respons
 // Delete a User with the specified id
 exports.deleteUserByUserId = async (req: { params: { id: number; }; }, res: Response, next: NextFunction) => {
   try {
+    
     const id = req.params.id;
+    console.log('id ' + id);
     await userService.deleteUserByUserId(id);
     contentNegotiate.sendResponse(req, res, 204, {}, 'User Deleted', 'Success');
   } catch (error) {

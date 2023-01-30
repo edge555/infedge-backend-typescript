@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+import { Request, Response } from "express";
 const { sendResponse } = require("../utils/sendResponse");
 const signToken = (userBody: {
   id: number;
@@ -11,8 +12,8 @@ const signToken = (userBody: {
 };
 
 exports.sendResponseWithJwtToken = (
-  req: any,
-  res: any,
+  req: Request,
+  res: Response,
   statuscode: number,
   userData: {
     token?: string;
