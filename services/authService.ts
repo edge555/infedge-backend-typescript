@@ -23,7 +23,12 @@ class authService {
     // }
     return userAuthData;
   };
-  signUpUser = async (authBody: { username: string, name: string, email: string, password: string }) => {
+  signUpUser = async (authBody: {
+    username: string;
+    name: string;
+    email: string;
+    password: string;
+  }) => {
     const { username, name, email, password } = authBody;
     const authData = { username, password };
     const userData = { name, email };
@@ -35,10 +40,10 @@ class authService {
     const allAuthData = await this.authRepository.getAllAuths();
     return allAuthData;
   };
-  // deleteAllUsers = async () => {
-  //   await this.authRepository.deleteAllUsers();
-  //   return null;
-  // };
+  deleteAllUsers = async (): Promise<void> => {
+    await this.authRepository.deleteAllUsers();
+    return null;
+  };
 }
 
 module.exports = authService;

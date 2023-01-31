@@ -1,68 +1,69 @@
 import { DataTypes, Model, Optional } from "sequelize";
 const sequelizeConnection = require("../dbConnect");
-interface UserAttributes {
+interface StoryAttributes {
   id: number;
-  username: string;
-  name: string;
-  email: string;
-  role: number;
+  title: string;
+  description: string;
+  authorUserName: string;
+  authorName: string;
+  authorId: number;
   lastModifierId: number;
   lastModificationTime: Date;
-  passwordLastModificationTime: Date;
 }
 
-export interface UserInput extends Optional<UserAttributes, "id" | "role"> {}
+export interface StoryInput
+  extends Optional<StoryAttributes, "id" | "lastModifierId"> {}
 
-export interface UserOutput extends Required<UserAttributes> {}
+export interface StoryOutput extends Required<StoryAttributes> {}
 
-class User extends Model<UserAttributes, UserInput> implements UserAttributes {
+class Story
+  extends Model<StoryAttributes, StoryInput>
+  implements StoryAttributes
+{
   public id!: number;
-  public username!: string;
-  public name!: string;
-  public email!: string;
-  public role!: number;
+  public title!: string;
+  public description!: string;
+  public authorUserName!: string;
+  public authorName!: string;
+  public authorId!: number;
   public lastModifierId!: number;
   public lastModificationTime!: Date;
-  public passwordLastModificationTime!: Date;
   // timestamp
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 }
 
-User.init(
+Story.init(
   {
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
     },
-    username: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true,
-    },
-    name: {
+    title: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    email: {
+    description: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
     },
-    role: {
-      type: DataTypes.INTEGER,
+    authorUserName: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    authorName: {
+      type: DataTypes.STRING,
       defaultValue: 0,
+    },
+    authorId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
     },
     lastModifierId: {
       type: DataTypes.INTEGER,
-      allowNull: false,
     },
     lastModificationTime: {
-      type: DataTypes.DATE,
-      allowNull: false,
-    },
-    passwordLastModificationTime: {
       type: DataTypes.DATE,
       allowNull: false,
     },
@@ -72,4 +73,4 @@ User.init(
   }
 );
 
-export default User;
+export default Story;

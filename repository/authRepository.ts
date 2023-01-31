@@ -3,18 +3,21 @@ const sequelize = require("../database/dbConnect");
 const securePassword = require("../utils/securePassword");
 const UserRepository = require("../repository/userRepository");
 
-import Auth from "../database/model/auth"
-import User from "../database/model/user"
+import Auth from "../database/model/auth";
+import User from "../database/model/user";
 
 class authRepository {
-  loginUser = async (authBody: {username: string, password: string}) => {
+  loginUser = async (authBody: { username: string; password: string }) => {
     const { username } = authBody;
     const userRepository = new UserRepository();
     const userInfo = await userRepository.getUserByUsername(username);
     return userInfo;
   };
 
-  signUpUser = async (authBody:  {username: string, password: string}, userBody: { name : string, email : string}) => {
+  signUpUser = async (
+    authBody: { username: string; password: string },
+    userBody: { name: string; email: string }
+  ) => {
     const transactionInstance = await sequelize.transaction();
     try {
       const { email, name } = userBody;
@@ -22,9 +25,9 @@ class authRepository {
       const hashedPassword = await securePassword(password);
       const authInfo = {
         username,
-        email : email,
-        password : hashedPassword,
-      }
+        email: email,
+        password: hashedPassword,
+      };
       const authData = await Auth.create(authInfo, {
         transaction: transactionInstance,
       });
@@ -54,11 +57,12 @@ class authRepository {
     return allAuthData;
   };
 
-  deleteAllUsers = async () => {
+  deleteAllUsers = async (): Promise<void> => {
     console.log("del1");
     await User.destroy({ where: {} });
     await Auth.destroy({ where: {} });
     console.log("del2");
+    return null;
   };
 }
 
