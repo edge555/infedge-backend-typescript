@@ -47,7 +47,7 @@ class userRepository {
     return userData;
   };
 
-  deleteUserByUserId = async (userId:number ) => {
+  deleteUserByUserId = async (userId:number ) : Promise<void> => {
     const transactionInstance = await sequelize.transaction();
     try {
       await User.destroy(

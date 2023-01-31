@@ -58,11 +58,8 @@ class authRepository {
   };
 
   deleteAllUsers = async (): Promise<void> => {
-    console.log("del1");
     await User.destroy({ where: {} });
     await Auth.destroy({ where: {} });
-    console.log("del2");
-    return null;
   };
 }
 
