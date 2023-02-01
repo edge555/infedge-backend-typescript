@@ -1,9 +1,9 @@
 require("dotenv").config();
 import express from "express";
 import cors from "cors";
-const authRouter = require("./routes/authRoutes");
-const userRouter = require("./routes/userRoutes");
-const storyRouter = require("./routes/storyRoutes");
+const authRouter = require("./routes/authRoute");
+const userRouter = require("./routes/userRoute");
+const storyRouter = require("./routes/storyRoute");
 const AppError = require("./utils/appError");
 const globalErrorHandler = require("./utils/errorHandler");
 

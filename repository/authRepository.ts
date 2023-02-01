@@ -52,14 +52,21 @@ class authRepository {
     }
   };
 
+  // delete later
   getAllAuths = async () => {
     const allAuthData = await Auth.findAll();
     return allAuthData;
   };
 
   deleteAllUsers = async (): Promise<void> => {
-    await User.destroy({ where: {} });
-    await Auth.destroy({ where: {} });
+    await User.destroy({
+      truncate: true,
+      cascade: false,
+    });
+    await Auth.destroy({
+      truncate: true,
+      cascade: false,
+    });
   };
 }
 

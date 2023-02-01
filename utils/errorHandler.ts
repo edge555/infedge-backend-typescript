@@ -1,5 +1,6 @@
 export {};
 const AppError = require("../utils/appError");
+import { Request, Response, NextFunction } from "express";
 
 const handleSequelizeUniqueConstraintError = (message: string) =>
   new AppError(message, 401);
@@ -15,13 +16,7 @@ const sendError = (
     status: string;
     message: string;
   },
-  res: {
-    status: (arg0: number) => {
-      (): any;
-      new (): any;
-      json: { (arg0: { status: string; message: string }): void; new (): any };
-    };
-  }
+  res: Response
 ) => {
   console.log(err);
   if (err.isOperational) {
@@ -45,9 +40,9 @@ module.exports = (
     message: string;
     isOperational: boolean;
   },
-  req: any,
-  res: any,
-  next: any
+  req: Request,
+  res: Response,
+  next: NextFunction
 ) => {
   err.statusCode = err.statusCode || 500;
   err.status = err.status || "error";

@@ -1,18 +1,34 @@
 export {};
 import { Request, Response, NextFunction } from "express";
-const StoryService = require("../Services/storyService");
+const StoryService = require("../services/storyService");
 const storyService = new StoryService();
 const contentNegotiate = require("../utils/sendResponse");
+import User from "../database/model/user";
+
+interface MyUserRequest extends Request {
+  user: User;
+}
 
 // Insert a story to database
-exports.postStory = async (req : Request, res : Response, next : NextFunction) => {
-    try {
-      const storysData = await storyService.postStory(req.body);
-      contentNegotiate.sendResponse(req, res, 201, storysData, 'Story created', 'Success');
-    } catch (error) {
-      next(error);
-    }
-  };
+exports.postStory = async (
+  req: MyUserRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const storysData = await storyService.postStory(req.body, req.user);
+    contentNegotiate.sendResponse(
+      req,
+      res,
+      201,
+      storysData,
+      "Story created",
+      "Success"
+    );
+  } catch (error) {
+    next(error);
+  }
+};
 
 // Retrieve all Stories from the database.
 exports.getAllStories = async (

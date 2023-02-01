@@ -12,7 +12,7 @@ class userService {
       throw new AppError("Bad request", 400);
     }
     const userData = await this.userRepository.getUserByUserId(userId);
-    if (!userData) { 
+    if (!userData) {
       throw new AppError("No User was found with that ID", 404);
     }
 
@@ -33,7 +33,10 @@ class userService {
     }
     return userData;
   };
-  updateUserByUserId = async (userId: number, userBody: any) => {
+  updateUserByUserId = async (
+    userId: number,
+    userBody: { name?: string; email?: string }
+  ) => {
     if (userId == null) {
       throw new AppError("Bad request", 400);
     }
@@ -55,6 +58,16 @@ class userService {
       throw new AppError("No User was found with that ID", 404);
     }
     await this.userRepository.deleteUserByUserId(userId);
+  };
+  changedPasswordAfter = async (
+    JWTTimeStamp: number,
+    passwordChangedAt: string
+  ) => {
+    if (passwordChangedAt) {
+      const timestamp = Math.floor(Date.parse(passwordChangedAt) / 1000);
+      return JWTTimeStamp < timestamp;
+    }
+    return false;
   };
 }
 

@@ -6,7 +6,9 @@ const authService = new AuthService();
 
 // Create and Save a new User
 exports.signUpUser = async (
-  req: { body: { username: string, name: string, email:string, password: string } },
+  req: {
+    body: { username: string; name: string; email: string; password: string };
+  },
   res: Response,
   next: NextFunction
 ) => {
@@ -34,7 +36,7 @@ exports.signUpUser = async (
 
 // login a user
 exports.loginUser = async (
-  req: { body: { username: string, password: string } },
+  req: { body: { username: string; password: string } },
   res: Response,
   next: NextFunction
 ) => {
@@ -58,15 +60,13 @@ exports.loginUser = async (
   }
 };
 
+// delete later
 exports.getAllAuths = async (req: Request, res: Response) => {
   const allAuthData = await authService.getAllAuths();
   res.send(allAuthData);
 };
 
-exports.deleteAllUsers = async (
-  req: Request,
-  res: Response
-) => {
+exports.deleteAllUsers = async (req: Request, res: Response) => {
   const delData = await authService.deleteAllUsers();
   res.send(delData);
 };

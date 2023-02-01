@@ -1,9 +1,10 @@
 export {};
 const AuthRepository = require("../repository/authRepository");
+const UserRepository = require("../repository/userRepository");
 const User = require("../database/model/user");
 const Auth = require("../database/model/auth");
 const AppError = require("../utils/appError");
-//const bcrypt = require('bcryptjs');
+const bcrypt = require("bcryptjs");
 
 class authService {
   authRepository: typeof AuthRepository;
@@ -11,17 +12,22 @@ class authService {
     this.authRepository = new AuthRepository();
   }
 
-  loginUser = async (authBody: any) => {
+  loginUser = async (authBody: { username: string; password: string }) => {
     const userAuthData = await this.authRepository.loginUser(authBody);
     if (!userAuthData) {
       throw new AppError("User not found", 404);
     }
-    // const userData = await new UserRepository().getUserByUserId(userAuthData.id);
-    // const isMatchedPassword = await bcrypt.compare(authBody.password, userAuthData.password);
-    // if (!isMatchedPassword) {
-    //   throw new AppError('Incorrect password', 403);
-    // }
-    return userAuthData;
+    const userData = await new UserRepository().getUserByUserId(
+      userAuthData.id
+    );
+    const isMatchedPassword = await bcrypt.compare(
+      authBody.password,
+      userAuthData.password
+    );
+    if (!isMatchedPassword) {
+      throw new AppError("Incorrect password", 403);
+    }
+    return userData;
   };
   signUpUser = async (authBody: {
     username: string;
