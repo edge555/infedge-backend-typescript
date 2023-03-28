@@ -1,19 +1,17 @@
-export {};
 import { Request, Response, NextFunction } from "express";
-const UserService = require("../services/userService");
-
+import UserService from "../services/userService";
+import {sendResponse} from "../utils/sendResponse";
 const userService = new UserService();
-const contentNegotiate = require("../utils/sendResponse");
 
 // Retrieve all Users from the database.
-exports.getAllUsers = async (
+export const getAllUsers = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): Promise<void> => {
   try {
     const usersData = await userService.getAllUsers();
-    contentNegotiate.sendResponse(
+    sendResponse(
       req,
       res,
       200,
@@ -27,15 +25,15 @@ exports.getAllUsers = async (
 };
 
 // Find a single User with an id
-exports.getUserByUserId = async (
-  req: { params: { id: number } },
+export const getUserByUserId = async (
+  req: Request,
   res: Response,
   next: NextFunction
-) => {
+): Promise<void> => {
   try {
-    const id = req.params.id;
+    const id = parseInt(req.params.id);
     const userData = await userService.getUserByUserId(id);
-    contentNegotiate.sendResponse(
+    sendResponse(
       req,
       res,
       200,
@@ -48,46 +46,37 @@ exports.getUserByUserId = async (
   }
 };
 
-// // Retrieve all Users from the database matching keywords
-// exports.getSearchedUsers = async (req: { params: { id: any; }; }, res: any, next: (arg0: unknown) => void) => {
-//   try {
-//     const id = req.params.id;
-
-//     const usersData = await userService.getSearchedUsers(id);
-//     return usersData;
-//   } catch (error) {
-//     next(error);
-//   }
-// };
-
-// Delete a User with the specified id
-exports.deleteUserByUserId = async (
-  req: { params: { id: number } },
-  res: Response,
-  next: NextFunction
-) => {
+// Retrieve all Users from the database matching keywords
+export const getSearchedUsers = async (req: Request, res: Response, next: NextFunction) : Promise<void> => {
   try {
-    const id = req.params.id;
-    await userService.deleteUserByUserId(id);
-    contentNegotiate.sendResponse(req, res, 204, {}, "User Deleted", "Success");
+    const name = req.params.id;
+    const usersData = await userService.getSearchedUsers(name);
+    sendResponse(
+      req,
+      res,
+      200,
+      usersData,
+      "Users Found",
+      "Success"
+    );
   } catch (error) {
     next(error);
   }
 };
 
 // Update a User by the id
-exports.updateUserByUserId = async (
-  req: { params: { id: number }; body: any; user: { id: number } },
+export const updateUserByUserId = async (
+  req: Request,
   res: Response,
   next: NextFunction
-) => {
+): Promise<void> => {
   try {
-    const id = req.params.id;
+    const id = parseInt(req.params.id);
     const userBody = req.body;
     //edit
     userBody.lastModifierId = 1;
     const userData = await userService.updateUserByUserId(id, userBody);
-    contentNegotiate.sendResponse(
+    sendResponse(
       req,
       res,
       200,
@@ -95,6 +84,21 @@ exports.updateUserByUserId = async (
       "User Updated",
       "Success"
     );
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Delete a User with the specified id
+export const deleteUserByUserId = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const id = parseInt(req.params.id);
+    await userService.deleteUserByUserId(id);
+    sendResponse(req, res, 204, {}, "User Deleted", "Success");
   } catch (error) {
     next(error);
   }

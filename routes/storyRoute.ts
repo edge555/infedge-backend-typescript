@@ -29,4 +29,4 @@ router
 //delete later
 router.route("/deleteall").post(Stories.deleteAll);
 
-export default router;
+module.exports = router;

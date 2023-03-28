@@ -1,7 +1,6 @@
-export {};
 const sequelize = require("../database/dbConnect");
-const securePassword = require("../utils/securePassword");
-const UserRepository = require("../repository/userRepository");
+import securePassword from "../utils/securePassword";
+import UserRepository from "../repository/userRepository";
 
 import Auth from "../database/model/auth";
 import User from "../database/model/user";

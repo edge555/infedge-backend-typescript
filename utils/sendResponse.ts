@@ -39,3 +39,5 @@ export const sendResponse = (req: Request, res: Response, statusCode: number, da
     sendJsonResponse(req, res, statusCode, data, message, status);
   }
 };
+
+export default sendResponse;

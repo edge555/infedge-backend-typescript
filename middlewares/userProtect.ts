@@ -1,17 +1,15 @@
-export {};
 const jwt = require("jsonwebtoken");
 const { promisify } = require("util");
 import { Request, Response, NextFunction } from "express";
-const UserService = require("../services/userService");
 const AppError = require("../utils/appError");
 import User from "../database/model/user";
+import UserService from "../services/userService";
 const userService = new UserService();
-
 interface MyUserRequest extends Request {
   user: User;
 }
 
-exports.Protect = async (
+export const Protect = async (
   req: MyUserRequest,
   res: Response,
   next: NextFunction
@@ -30,7 +28,7 @@ exports.Protect = async (
       );
     }
     const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-    const freshUser = await userService.getUserByUserId(decoded.user.id);
+    const freshUser = await userService.getUserByUserId(decoded.user.id) as User;
     if (!freshUser) {
       return next(
         new AppError(
@@ -46,6 +44,7 @@ exports.Protect = async (
     if (passwordChanged) {
       return next(new AppError("Password changed, Please log in again", 401));
     }
+    
     req.user = freshUser;
     next();
   } catch (error) {
@@ -53,13 +52,14 @@ exports.Protect = async (
   }
 };
 
-exports.isAuthorized = async (
+export const isAuthorized = async (
   req: MyUserRequest,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const user = await userService.getUserByUserId(req.params.id);
+    const id = parseInt(req.params.id);
+    const user = await userService.getUserByUserId(id);
     if (!user) {
       return next(new AppError("No user was found with that ID", 404));
     }

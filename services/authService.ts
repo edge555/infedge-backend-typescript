@@ -1,8 +1,5 @@
-export {};
 const AuthRepository = require("../repository/authRepository");
-const UserRepository = require("../repository/userRepository");
-const User = require("../database/model/user");
-const Auth = require("../database/model/auth");
+import UserRepository from "../repository/userRepository";
 const AppError = require("../utils/appError");
 const bcrypt = require("bcryptjs");
 
@@ -29,6 +26,8 @@ class authService {
     }
     return userData;
   };
+  
+  // add interface
   signUpUser = async (authBody: {
     username: string;
     name: string;

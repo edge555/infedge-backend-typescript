@@ -20,7 +20,7 @@ class StoryRepository {
     return storyData.map((story) => story.toJSON() as StoryOutput);
   }
 
-  async getSearchedStories(id: number): Promise<StoryOutput[]> {
+  async getSearchedStories(id: string): Promise<StoryOutput[]> {
     const storyData = await Story.findAll({
       where: {
         [Op.or]: [

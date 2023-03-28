@@ -1,5 +1,4 @@
-export {};
-const AppError = require("../utils/appError");
+import AppError from "../utils/appError";
 import StoryRepository from "../repository/storyRepository";
 import { StoryInput, StoryOutput } from "../database/model/story";
 import User from "../database/model/user";
@@ -49,7 +48,7 @@ class StoryService {
     return storyData;
   };
 
-  getSearchedStories = async (id: number): Promise<StoryOutput[]> => {
+  getSearchedStories = async (id: string): Promise<StoryOutput[]> => {
     const storyData: StoryOutput[] | null = await this.storyRepository.getSearchedStories(id);
     if (!storyData || storyData.length === 0) {
       throw new AppError("No stories found", 404);

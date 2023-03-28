@@ -1,15 +1,17 @@
-export {};
 const jwt = require("jsonwebtoken");
 const { promisify } = require("util");
 import { Request, Response, NextFunction } from "express";
-const UserService = require("../services/userService");
+import User from "../database/model/user";
 import StoryService from "../services/storyService";
+const storyService = new StoryService();
+import UserService from "../services/userService";
+const userService = new UserService();
 const AppError = require("../utils/appError");
 
-const userService = new UserService();
-const storyService = new StoryService();
-
-exports.Protect = async (req: Request, res: Response, next: NextFunction) => {
+interface MyUserRequest extends Request {
+  user: User;
+}
+export const Protect = async (req: MyUserRequest, res: Response, next: NextFunction) => {
   try {
     let token;
     if (

@@ -1,56 +1,64 @@
-export {};
-const Sequelize = require("sequelize");
 const sequelize = require("../database/dbConnect");
-import Auth from "../database/model/auth";
-import User from "../database/model/user";
-import { UserInput, UserOutput } from "../database/model/user";
-const Op = Sequelize.Op;
+import { Op } from 'sequelize';
+import Auth from '../database/model/auth';
+import User, { UserInput, UserOutput } from '../database/model/user';
 
-class userRepository {
-  getUserByUserId = async (userId: number): Promise<UserOutput> => {
+class UserRepository {
+  getUserByUserId = async (
+    userId: number
+  ): Promise<UserOutput | null> => {
     const userData = await User.findByPk(userId);
+    return userData ? (userData.toJSON() as UserOutput) : null;
+  };
+
+  getUserByUsername = async (
+    username: string
+  ): Promise<Auth | null> => {
+    const userData = await Auth.findOne({ where: { username } });
     return userData;
   };
 
-  getUserByUsername = async (username: string) => {
-    const userData = await Auth.findOne({ where: { username: username } });
-    return userData;
-  };
-
-  getAllUsers = async (): Promise<UserOutput[]> => {
+  getAllUsers = async (): Promise<UserOutput[] | null> => {
     const userData = await User.findAll();
-    return userData;
+    return userData.map((user) => user.toJSON() as UserOutput);
   };
 
-  getSearchedUsers = async (name: string): Promise<UserOutput[]> => {
+  getSearchedUsers = async (
+    name: string
+  ): Promise<UserOutput[] | null> => {
     const userData = await User.findAll({
       where: {
         [Op.or]: [
           {
             username: {
-              [Op.like]: "%" + name + "%",
+              [Op.like]: `%${name}%`,
             },
           },
           {
             name: {
-              [Op.iLike]: "%" + name + "%",
+              [Op.iLike]: `%${name}%`,
             },
           },
         ],
       },
     });
-    return userData;
+    return userData.map((user) => user.toJSON() as UserOutput);
   };
 
   updateUserByUserId = async (
     userId: number,
     userBody: { name?: string; email?: string }
-  ) => {
-    const userData = await User.update(userBody, { where: { id: userId } });
+  ): Promise<[number, UserOutput[]]> => {
+    const userData = await User.update(userBody, {
+      where: { id: userId },
+      returning: true,
+    });
     return userData;
   };
 
-  deleteUserByUserId = async (userId: number): Promise<void> => {
+  deleteUserByUserId = async (
+    userId: number
+  ): Promise<void> => {
     const transactionInstance = await sequelize.transaction();
     try {
       await User.destroy({
@@ -69,4 +77,4 @@ class userRepository {
   };
 }
 
-module.exports = userRepository;
+export default UserRepository;

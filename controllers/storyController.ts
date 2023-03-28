@@ -1,9 +1,9 @@
-export {};
 import { Request, Response, NextFunction } from "express";
 import StoryService from "../services/storyService";
-const storyService = new StoryService();
-const contentNegotiate = require("../utils/sendResponse");
+import {sendResponse} from "../utils/sendResponse";
 import User from "../database/model/user";
+
+const storyService = new StoryService();
 
 interface MyUserRequest extends Request {
   user: User;
@@ -17,7 +17,7 @@ export const postStory = async (
 ): Promise<void> => {
   try {
     const storyData = await storyService.postStory(req.body, req.user);
-    contentNegotiate.sendResponse(
+    sendResponse(
       req,
       res,
       201,
@@ -30,7 +30,6 @@ export const postStory = async (
   }
 };
 
-
 // Retrieve all Stories from the database.
 export const getAllStories = async (
   req: Request,
@@ -39,7 +38,7 @@ export const getAllStories = async (
 ): Promise<void> => {
   try {
     const storysData = await storyService.getAllStories();
-    contentNegotiate.sendResponse(
+    sendResponse(
       req,
       res,
       200,
@@ -53,15 +52,25 @@ export const getAllStories = async (
 };
 
 // Retrieve all Stories from the database matching keyword
-exports.getSearchedStories = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const id = parseInt(req.params.id);
-      const storysData = await storyService.getSearchedStories(id);
-      contentNegotiate.sendResponse(req, res, 200, storysData, 'Stories Found', 'Success');
-    } catch (error) {
-      next(error);
-    }
-  };
+export const getSearchedStories = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const storysData = await storyService.getSearchedStories(req.params.id);
+    sendResponse(
+      req,
+      res,
+      200,
+      storysData,
+      "Stories Found",
+      "Success"
+    );
+  } catch (error) {
+    next(error);
+  }
+};
 
 // Find a single Story with an id
 export const getStoryByStoryId = async (
@@ -72,7 +81,7 @@ export const getStoryByStoryId = async (
   try {
     const id = parseInt(req.params.id);
     const storyData = await storyService.getStoryByStoryId(id);
-    contentNegotiate.sendResponse(
+    sendResponse(
       req,
       res,
       200,
@@ -95,7 +104,7 @@ export const updateStoryByStoryId = async (
     const id = parseInt(req.params.id);
     const storyBody = req.body;
     const storyData = await storyService.updateStoryByStoryId(id, storyBody);
-    contentNegotiate.sendResponse(
+    sendResponse(
       req,
       res,
       200,
@@ -117,7 +126,7 @@ export const deleteStoryByStoryId = async (
   try {
     const id = parseInt(req.params.id);
     await storyService.deleteStoryByStoryId(id);
-    contentNegotiate.sendResponse(
+    sendResponse(
       req,
       res,
       204,
@@ -130,8 +139,9 @@ export const deleteStoryByStoryId = async (
   }
 };
 
+
 // delete all Stories
-exports.deleteAll = async (req: Request, res: Response, next: NextFunction) => {
+export const deleteAll = async (req: Request, res: Response, next: NextFunction) => {
   const delData = await storyService.deleteAll();
   res.send(delData);
 };

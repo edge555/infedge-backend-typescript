@@ -1,4 +1,3 @@
-export {};
 const router = require('express').Router();
 const Auths = require('../controllers/authController');
 
