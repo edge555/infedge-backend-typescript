@@ -1,6 +1,6 @@
 export {};
 import { Request, Response, NextFunction } from "express";
-const StoryService = require("../services/storyService");
+import StoryService from "../services/storyService";
 const storyService = new StoryService();
 const contentNegotiate = require("../utils/sendResponse");
 import User from "../database/model/user";
@@ -10,18 +10,18 @@ interface MyUserRequest extends Request {
 }
 
 // Insert a story to database
-exports.postStory = async (
+export const postStory = async (
   req: MyUserRequest,
   res: Response,
   next: NextFunction
-) => {
+): Promise<void> => {
   try {
-    const storysData = await storyService.postStory(req.body, req.user);
+    const storyData = await storyService.postStory(req.body, req.user);
     contentNegotiate.sendResponse(
       req,
       res,
       201,
-      storysData,
+      storyData,
       "Story created",
       "Success"
     );
@@ -30,12 +30,13 @@ exports.postStory = async (
   }
 };
 
+
 // Retrieve all Stories from the database.
-exports.getAllStories = async (
+export const getAllStories = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): Promise<void> => {
   try {
     const storysData = await storyService.getAllStories();
     contentNegotiate.sendResponse(
@@ -51,25 +52,25 @@ exports.getAllStories = async (
   }
 };
 
-// // Retrieve all Stories from the database matching keyword
-// exports.getSearchedStories = async (req: Request, res: Response, next: NextFunction) => {
-//     try {
-//       const id = req.params.id;
-//       const storysData = await storyService.getSearchedStories(id);
-//       contentNegotiate.sendResponse(req, res, 200, storysData, 'Stories Found', 'Success');
-//     } catch (error) {
-//       next(error);
-//     }
-//   };
+// Retrieve all Stories from the database matching keyword
+exports.getSearchedStories = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const id = parseInt(req.params.id);
+      const storysData = await storyService.getSearchedStories(id);
+      contentNegotiate.sendResponse(req, res, 200, storysData, 'Stories Found', 'Success');
+    } catch (error) {
+      next(error);
+    }
+  };
 
 // Find a single Story with an id
-exports.getStoryByStoryId = async (
+export const getStoryByStoryId = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): Promise<void> => {
   try {
-    const id = req.params.id;
+    const id = parseInt(req.params.id);
     const storyData = await storyService.getStoryByStoryId(id);
     contentNegotiate.sendResponse(
       req,
@@ -85,16 +86,14 @@ exports.getStoryByStoryId = async (
 };
 
 // Update a Story by the id
-exports.updateStoryByStoryId = async (
+export const updateStoryByStoryId = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): Promise<void> => {
   try {
-    const id = req.params.id;
+    const id = parseInt(req.params.id);
     const storyBody = req.body;
-    //storyBody.lastModifierId = req.user.id;
-    storyBody.lastModifierId = 1;
     const storyData = await storyService.updateStoryByStoryId(id, storyBody);
     contentNegotiate.sendResponse(
       req,
@@ -110,13 +109,13 @@ exports.updateStoryByStoryId = async (
 };
 
 // Delete a Story with the specified id
-exports.deleteStoryByStoryId = async (
+export const deleteStoryByStoryId = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): Promise<void> => {
   try {
-    const id = req.params.id;
+    const id = parseInt(req.params.id);
     await storyService.deleteStoryByStoryId(id);
     contentNegotiate.sendResponse(
       req,

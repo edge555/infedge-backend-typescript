@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 const { promisify } = require("util");
 import { Request, Response, NextFunction } from "express";
 const UserService = require("../services/userService");
-const StoryService = require("../services/storyService");
+import StoryService from "../services/storyService";
 const AppError = require("../utils/appError");
 
 const userService = new UserService();
@@ -34,11 +34,13 @@ exports.Protect = async (req: Request, res: Response, next: NextFunction) => {
       return next(new AppError(`You don't have the permission`, 403));
     }
     if (req.params.id) {
-      const storyData = await storyService.getAuthorIdByStoryId(req.params.id);
-      if (!storyData) {
+      const id = parseInt(req.params.id);
+      const authorId = await storyService.getAuthorIdByStoryId(id);
+      if (!authorId) {
         return next(new AppError(`The story doesn't exist`, 401));
       }
-      if (role != 1 && storyData.authorId != decoded.user.id) {
+   
+      if (role != 1 && authorId != decoded.user.id) {
         return next(new AppError(`You don't have the permission`, 403));
       }
     }

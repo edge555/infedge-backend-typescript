@@ -1,89 +1,98 @@
 export {};
-const StoryRepository = require("../repository/storyRepository");
 const AppError = require("../utils/appError");
+import StoryRepository from "../repository/storyRepository";
+import { StoryInput, StoryOutput } from "../database/model/story";
 import User from "../database/model/user";
-class storyService {
-  storyRepository: typeof StoryRepository;
+
+class StoryService {
+  storyRepository: StoryRepository;
+
   constructor() {
     this.storyRepository = new StoryRepository();
   }
+
   postStory = async (
     storyBody: { title: string; description: string },
     userBody: User
-  ) => {
+  ): Promise<StoryOutput> => {
     const { title, description } = storyBody;
-    const storyObj = {
+    const storyObj: StoryInput = {
       title,
       description,
       authorName: userBody.name,
       authorUserName: userBody.username,
       authorId: userBody.id,
       lastModifierId: userBody.id,
-      lastModificationTime: Date.now(),
+      lastModificationTime: new Date(),
     };
-    const storyData = await this.storyRepository.postStory(storyObj);
+    const storyData: StoryOutput = await this.storyRepository.postStory(storyObj);
     return storyData;
   };
-  getStoryByStoryId = async (storyId: number) => {
+
+  getStoryByStoryId = async (storyId: number): Promise<StoryOutput> => {
     if (storyId == null) {
       throw new AppError("Bad request", 400);
     }
-    const storyData = await this.storyRepository.getStoryByStoryId(storyId);
+    const storyData: StoryOutput | null = await this.storyRepository.getStoryByStoryId(storyId);
     if (!storyData) {
       throw new AppError("No Story was found with that ID", 404);
     }
 
     return storyData;
   };
-  getAllStories = async () => {
-    const storyData = await this.storyRepository.getAllStories();
-    if (!storyData) {
+
+  getAllStories = async (): Promise<StoryOutput[]> => {
+    const storyData: StoryOutput[] | null = await this.storyRepository.getAllStories();
+    if (!storyData || storyData.length === 0) {
       throw new AppError("No stories found", 404);
     }
     return storyData;
   };
 
-  getSearchedStories = async (id: number) => {
-    const storyData = await this.storyRepository.getSearchedStories(id);
-    if (!storyData) {
+  getSearchedStories = async (id: number): Promise<StoryOutput[]> => {
+    const storyData: StoryOutput[] | null = await this.storyRepository.getSearchedStories(id);
+    if (!storyData || storyData.length === 0) {
       throw new AppError("No stories found", 404);
     }
     return storyData;
   };
+
   updateStoryByStoryId = async (
     storyId: number,
     storyBody: { title?: string; description?: string }
-  ) => {
+  ): Promise<StoryOutput> => {
     if (storyId == null) {
       throw new AppError("Bad request", 400);
     }
-    const storyData = await this.storyRepository.updateStoryByStoryId(
-      storyId,
-      storyBody
-    );
-    if (!storyData) {
+    const [rowsAffected, updatedStory] = await this.storyRepository.updateStoryByStoryId(storyId, storyBody);
+    if (rowsAffected === 0 || !updatedStory) {
       throw new AppError("No Story was found with that ID", 404);
     }
-    return storyData;
+    return updatedStory;
   };
-  deleteStoryByStoryId = async (storyId: number) => {
+
+  deleteStoryByStoryId = async (storyId: number): Promise<void> => {
     if (storyId == null) {
       throw new AppError("Bad request", 400);
     }
-    const storyData = await this.storyRepository.getStoryByStoryId(storyId);
+    const storyData: StoryOutput | null = await this.storyRepository.getStoryByStoryId(storyId);
     if (!storyData) {
       throw new AppError("No Story was found with that ID", 404);
     }
     await this.storyRepository.deleteStoryByStoryId(storyId);
   };
 
-  getAuthorIdByStoryId = async (storyId: number) => {
+getAuthorIdByStoryId = async (storyId: number): Promise<number> => {
     if (storyId == null) {
       throw new AppError("Something went wrong", 500);
     }
-    const storyData = await this.storyRepository.getAuthorIdByStoryId(storyId);
-    return storyData;
+    const authorId: number | null = await this.storyRepository.getAuthorIdByStoryId(storyId);
+    if (authorId == null) {
+      throw new AppError("No Story was found with that ID", 404);
+    }
+    return authorId;
   };
+
 
   // delete later
   deleteAll = async () => {
@@ -91,4 +100,4 @@ class storyService {
   };
 }
 
-module.exports = storyService;
+export default StoryService;

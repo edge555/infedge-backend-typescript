@@ -1,28 +1,26 @@
-export {};
-const Sequelize = require("sequelize");
-const sequelize = require("../database/dbConnect");
-import Story from "../database/model/story";
+import { Op } from "sequelize";
+import Story, { StoryInput, StoryOutput } from "../database/model/story";
 import iStoryBody from "../database/model/interfaces/story/iStoryBody";
-import { StoryInput, StoryOutput } from "../database/model/story";
-const Op = Sequelize.Op;
 
-class storyRepository {
+class StoryRepository {
   constructor() {}
-  postStory = async (storyBody: iStoryBody) => {
+
+  async postStory(storyBody: iStoryBody): Promise<StoryOutput> {
     const storyData = await Story.create(storyBody);
-    return storyData;
-  };
-  getStoryByStoryId = async (storyId: number): Promise<StoryOutput> => {
+    return storyData.toJSON() as StoryOutput;
+  }
+
+  async getStoryByStoryId(storyId: number): Promise<StoryOutput | null> {
     const storyData = await Story.findByPk(storyId);
-    return storyData;
-  };
+    return storyData?.toJSON() as StoryOutput | null;
+  }
 
-  getAllStories = async (): Promise<StoryOutput[]> => {
+  async getAllStories(): Promise<StoryOutput[]> {
     const storyData = await Story.findAll();
-    return storyData;
-  };
+    return storyData.map((story) => story.toJSON() as StoryOutput);
+  }
 
-  getSearchedStories = async (id: number): Promise<StoryOutput[]> => {
+  async getSearchedStories(id: number): Promise<StoryOutput[]> {
     const storyData = await Story.findAll({
       where: {
         [Op.or]: [
@@ -39,28 +37,34 @@ class storyRepository {
         ],
       },
     });
-    return storyData;
-  };
-  updateStoryByStoryId = async (storyId: number, storyBody: iStoryBody) => {
+    return storyData.map((story) => story.toJSON() as StoryOutput);
+  }
+
+  async updateStoryByStoryId(
+    storyId: number,
+    storyBody: { title?: string; description?: string }
+  ): Promise<[number, StoryOutput]> {
     const storyData = await Story.update(storyBody, { where: { id: storyId } });
-    return storyData;
-  };
+    const updatedStoryData = await this.getStoryByStoryId(storyId);
+    return [storyData[0], updatedStoryData as StoryOutput];
+  }
 
-  deleteStoryByStoryId = async (storyId: number): Promise<void> => {
-    await Story.destroy({ where: { id: storyId } });
-  };
+  async deleteStoryByStoryId(storyId: number): Promise<number> {
+    const rowsDeleted = await Story.destroy({ where: { id: storyId } });
+    return rowsDeleted;
+  }
 
-  getAuthorIdByStoryId = async (storyId: number) => {
+  async getAuthorIdByStoryId(storyId: number): Promise<number | null> {
     const storyData = await Story.findByPk(storyId);
-    return storyData;
-  };
+    return storyData?.authorId || null;
+  }
 
-  // delete later
-  deleteAll = async () => {
-    await Story.destroy({
+  async deleteAll(): Promise<number> {
+    const rowsDeleted = await Story.destroy({
       truncate: true,
     });
-  };
+    return rowsDeleted;
+  }
 }
 
-module.exports = storyRepository;
+export default StoryRepository;
