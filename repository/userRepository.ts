@@ -11,7 +11,7 @@ class UserRepository {
     return userData ? (userData.toJSON() as UserOutput) : null;
   };
 
-  getUserByUsername = async (
+  getUserAuthByUsername = async (
     username: string
   ): Promise<Auth | null> => {
     const userData = await Auth.findOne({ where: { username } });

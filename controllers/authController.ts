@@ -1,14 +1,13 @@
 import { Request, Response, NextFunction } from "express";
-const contentNegotiate = require("../utils/sendResponse");
-const jwthandler = require("../utils/jwtHandler");
-const AuthService = require("../services/authService");
+import {sendResponse} from "../utils/sendResponse";
+import { sendResponseWithJwtToken } from "../utils/jwtHandler";
+
+import AuthService from "../services/authService";
 const authService = new AuthService();
 
 // Create and Save a new User
-exports.signUpUser = async (
-  req: {
-    body: { username: string; name: string; email: string; password: string };
-  },
+export const signUpUser = async (
+  req: Request,
   res: Response,
   next: NextFunction
 ) => {
@@ -21,7 +20,7 @@ exports.signUpUser = async (
       password,
     };
     const authData = await authService.signUpUser(data);
-    contentNegotiate.sendResponse(
+    sendResponse(
       req,
       res,
       201,
@@ -35,8 +34,8 @@ exports.signUpUser = async (
 };
 
 // login a user
-exports.loginUser = async (
-  req: { body: { username: string; password: string } },
+export const loginUser = async (
+  req: Request,
   res: Response,
   next: NextFunction
 ) => {
@@ -47,7 +46,7 @@ exports.loginUser = async (
       password,
     };
     const userData = await authService.loginUser(data);
-    jwthandler.sendResponseWithJwtToken(
+    sendResponseWithJwtToken(
       req,
       res,
       200,
@@ -61,12 +60,12 @@ exports.loginUser = async (
 };
 
 // delete later
-exports.getAllAuths = async (req: Request, res: Response) => {
+export const getAllAuths = async (req: Request, res: Response) => {
   const allAuthData = await authService.getAllAuths();
   res.send(allAuthData);
 };
 
-exports.deleteAllUsers = async (req: Request, res: Response) => {
+export const deleteAllUsers = async (req: Request, res: Response) => {
   const delData = await authService.deleteAllUsers();
   res.send(delData);
 };

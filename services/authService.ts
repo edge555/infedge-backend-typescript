@@ -1,15 +1,18 @@
-const AuthRepository = require("../repository/authRepository");
+import AuthRepository from "../repository/authRepository";
 import UserRepository from "../repository/userRepository";
-const AppError = require("../utils/appError");
-const bcrypt = require("bcryptjs");
+import AppError from "../utils/appError";
+import bcrypt from "bcryptjs";
+import { UserOutput } from '../database/model/user';
 
-class authService {
-  authRepository: typeof AuthRepository;
+class AuthService {
+  authRepository:   AuthRepository;
   constructor() {
     this.authRepository = new AuthRepository();
   }
-
-  loginUser = async (authBody: { username: string; password: string }) => {
+  
+  loginUser = async (
+    authBody: { username: string; password: string }
+  ): Promise<UserOutput | null> => {
     const userAuthData = await this.authRepository.loginUser(authBody);
     if (!userAuthData) {
       throw new AppError("User not found", 404);
@@ -26,29 +29,30 @@ class authService {
     }
     return userData;
   };
-  
-  // add interface
+
   signUpUser = async (authBody: {
     username: string;
     name: string;
     email: string;
     password: string;
-  }) => {
+  }): Promise<UserOutput | null> => {
     const { username, name, email, password } = authBody;
     const authData = { username, password };
     const userData = { name, email };
-    const user = await this.authRepository.signUpUser(authData, userData);
+    const user : UserOutput = await this.authRepository.signUpUser(authData, userData);
     return user;
   };
 
+  // delete later
   getAllAuths = async () => {
     const allAuthData = await this.authRepository.getAllAuths();
     return allAuthData;
   };
+
   deleteAllUsers = async (): Promise<void> => {
     await this.authRepository.deleteAllUsers();
     return null;
   };
 }
 
-module.exports = authService;
+export default AuthService;

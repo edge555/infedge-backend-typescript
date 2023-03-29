@@ -1,27 +1,29 @@
 const sequelize = require("../database/dbConnect");
 import securePassword from "../utils/securePassword";
 import UserRepository from "../repository/userRepository";
-
+import User, { UserOutput } from '../database/model/user';
 import Auth from "../database/model/auth";
-import User from "../database/model/user";
+import iUserBody from "../database/model/interfaces/user/iUserBody";
 
 class authRepository {
-  loginUser = async (authBody: { username: string; password: string }) => {
+  // add type
+  loginUser = async (authBody: { username: string; password: string }): Promise<Auth | null> => {
     const { username } = authBody;
     const userRepository = new UserRepository();
-    const userInfo = await userRepository.getUserByUsername(username);
+    const userInfo = await userRepository.getUserAuthByUsername(username);
     return userInfo;
   };
 
   signUpUser = async (
     authBody: { username: string; password: string },
     userBody: { name: string; email: string }
-  ) => {
+  ) : Promise<UserOutput | null> => {
     const transactionInstance = await sequelize.transaction();
     try {
       const { email, name } = userBody;
       const { username, password } = authBody;
       const hashedPassword = await securePassword(password);
+      // add type
       const authInfo = {
         username,
         email: email,
@@ -31,7 +33,8 @@ class authRepository {
         transaction: transactionInstance,
       });
       const { id, createdAt } = authData;
-      const userInfo = {
+      // add type
+      const userInfo : iUserBody = {
         id,
         username,
         name,
@@ -40,7 +43,7 @@ class authRepository {
         lastModificationTime: createdAt,
         passwordLastModificationTime: createdAt,
       };
-      const userData = await User.create(userInfo, {
+      const userData : UserOutput= await User.create(userInfo, {
         transaction: transactionInstance,
       });
       await transactionInstance.commit();
@@ -57,7 +60,7 @@ class authRepository {
     return allAuthData;
   };
 
-  deleteAllUsers = async (): Promise<void> => {
+  deleteAllUsers = async () => {
     await User.destroy({
       truncate: true,
       cascade: false,
@@ -69,4 +72,4 @@ class authRepository {
   };
 }
 
-module.exports = authRepository;
+export default authRepository;
