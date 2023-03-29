@@ -1,6 +1,5 @@
-export {};
-const AppError = require("../utils/appError");
-import { Request, Response, NextFunction } from "express";
+import { Request, Response, NextFunction } from 'express';
+const AppError = require('../utils/appError');
 
 const handleSequelizeUniqueConstraintError = (message: string) =>
   new AppError(message, 401);
@@ -26,8 +25,8 @@ const sendError = (
     });
   } else {
     res.status(500).json({
-      status: "error",
-      message: "Something went wrong",
+      status: 'error',
+      message: 'Something went wrong',
     });
   }
 };
@@ -42,16 +41,16 @@ module.exports = (
   },
   req: Request,
   res: Response,
-  next: NextFunction
+  _next: NextFunction
 ) => {
   err.statusCode = err.statusCode || 500;
-  err.status = err.status || "error";
-  if (err.name === "SequelizeUniqueConstraintError")
+  err.status = err.status || 'error';
+  if (err.name === 'SequelizeUniqueConstraintError')
     err = handleSequelizeUniqueConstraintError(err.errors[0].message);
-  if (err.name === "SequelizeValidationError")
+  if (err.name === 'SequelizeValidationError')
     err = handleSequelizeValidationError(err.errors[0].message);
-  if (err.name === "SequelizeDatabaseError")
-    err = handleSequelizeDatabaseError("Database Error");
+  if (err.name === 'SequelizeDatabaseError')
+    err = handleSequelizeDatabaseError('Database Error');
 
   sendError(err, res);
 };

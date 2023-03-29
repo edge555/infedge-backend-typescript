@@ -1,21 +1,23 @@
-import AuthRepository from "../repository/authRepository";
-import UserRepository from "../repository/userRepository";
-import AppError from "../utils/appError";
-import bcrypt from "bcryptjs";
+import AppError from '../utils/appError';
+import bcrypt from 'bcryptjs';
+
 import { UserOutput } from '../database/model/user';
+import AuthRepository from '../repository/authRepository';
+import UserRepository from '../repository/userRepository';
 
 class AuthService {
-  authRepository:   AuthRepository;
+  authRepository: AuthRepository;
   constructor() {
     this.authRepository = new AuthRepository();
   }
-  
-  loginUser = async (
-    authBody: { username: string; password: string }
-  ): Promise<UserOutput | null> => {
+
+  loginUser = async (authBody: {
+    username: string;
+    password: string;
+  }): Promise<UserOutput | null> => {
     const userAuthData = await this.authRepository.loginUser(authBody);
     if (!userAuthData) {
-      throw new AppError("User not found", 404);
+      throw new AppError('User not found', 404);
     }
     const userData = await new UserRepository().getUserByUserId(
       userAuthData.id
@@ -25,7 +27,7 @@ class AuthService {
       userAuthData.password
     );
     if (!isMatchedPassword) {
-      throw new AppError("Incorrect password", 403);
+      throw new AppError('Incorrect password', 403);
     }
     return userData;
   };
@@ -39,7 +41,10 @@ class AuthService {
     const { username, name, email, password } = authBody;
     const authData = { username, password };
     const userData = { name, email };
-    const user : UserOutput = await this.authRepository.signUpUser(authData, userData);
+    const user: UserOutput = await this.authRepository.signUpUser(
+      authData,
+      userData
+    );
     return user;
   };
 

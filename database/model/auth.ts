@@ -1,5 +1,5 @@
-import { DataTypes, Model, Optional } from "sequelize";
-const sequelizeConnection = require("../dbConnect");
+import { DataTypes, Model, Optional } from 'sequelize';
+const sequelizeConnection = require('../dbConnect');
 interface AuthAttributes {
   id: number;
   username: string;
@@ -7,9 +7,9 @@ interface AuthAttributes {
   password: string;
 }
 
-export interface AuthInput extends Optional<AuthAttributes, "id"> {}
+export type AuthInput = Optional<AuthAttributes, 'id'>;
 
-export interface AuthOuput extends Required<AuthAttributes> {}
+export type AuthOuput = Required<AuthAttributes>;
 
 class Auth extends Model<AuthAttributes, AuthInput> implements AuthAttributes {
   public id!: number;

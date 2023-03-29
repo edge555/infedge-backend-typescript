@@ -1,10 +1,9 @@
-import { Op } from "sequelize";
-import Story, { StoryInput, StoryOutput } from "../database/model/story";
-import iStoryBody from "../database/model/interfaces/story/iStoryBody";
+import { Op } from 'sequelize';
+
+import Story, { StoryOutput } from '../database/model/story';
+import iStoryBody from '../database/model/interfaces/story/iStoryBody';
 
 class StoryRepository {
-  constructor() {}
-
   async postStory(storyBody: iStoryBody): Promise<StoryOutput> {
     const storyData = await Story.create(storyBody);
     return storyData.toJSON() as StoryOutput;
@@ -26,18 +25,23 @@ class StoryRepository {
         [Op.or]: [
           {
             authorName: {
-              [Op.like]: "%" + id + "%",
+              [Op.like]: '%' + id + '%',
             },
           },
           {
             title: {
-              [Op.like]: "%" + id + "%",
+              [Op.like]: '%' + id + '%',
             },
           },
         ],
       },
     });
     return storyData.map((story) => story.toJSON() as StoryOutput);
+  }
+
+  async getAuthorIdByStoryId(storyId: number): Promise<number | null> {
+    const storyData = await Story.findByPk(storyId);
+    return storyData?.authorId || null;
   }
 
   async updateStoryByStoryId(
@@ -52,11 +56,6 @@ class StoryRepository {
   async deleteStoryByStoryId(storyId: number): Promise<number> {
     const rowsDeleted = await Story.destroy({ where: { id: storyId } });
     return rowsDeleted;
-  }
-
-  async getAuthorIdByStoryId(storyId: number): Promise<number | null> {
-    const storyData = await Story.findByPk(storyId);
-    return storyData?.authorId || null;
   }
 
   async deleteAll(): Promise<number> {

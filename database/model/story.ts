@@ -1,5 +1,5 @@
-import { DataTypes, Model, Optional } from "sequelize";
-const sequelizeConnection = require("../dbConnect");
+import { DataTypes, Model, Optional } from 'sequelize';
+const sequelizeConnection = require('../dbConnect');
 interface StoryAttributes {
   id: number;
   title: string;
@@ -11,10 +11,9 @@ interface StoryAttributes {
   lastModificationTime: Date;
 }
 
-export interface StoryInput
-  extends Optional<StoryAttributes, "id" | "lastModifierId"> {}
+export type StoryInput = Optional<StoryAttributes, 'id' | 'lastModifierId'>;
 
-export interface StoryOutput extends Required<StoryAttributes> {}
+export type StoryOutput = Required<StoryAttributes>;
 
 class Story
   extends Model<StoryAttributes, StoryInput>

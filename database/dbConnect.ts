@@ -1,11 +1,11 @@
-const Sequelize = require("sequelize");
+const Sequelize = require('sequelize');
 // db configuration
 const config = {
-  HOST: "localhost",
-  USER: "postgres",
-  PASSWORD: "123",
-  DB: "infedge-ts",
-  dialect: "postgres",
+  HOST: 'localhost',
+  USER: 'postgres',
+  PASSWORD: '123',
+  DB: 'infedge-ts',
+  dialect: 'postgres',
   pool: {
     max: 5,
     min: 0,

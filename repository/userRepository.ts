@@ -1,21 +1,13 @@
-const sequelize = require("../database/dbConnect");
+const sequelize = require('../database/dbConnect');
 import { Op } from 'sequelize';
+
 import Auth from '../database/model/auth';
-import User, { UserInput, UserOutput } from '../database/model/user';
+import User, { UserOutput } from '../database/model/user';
 
 class UserRepository {
-  getUserByUserId = async (
-    userId: number
-  ): Promise<UserOutput | null> => {
+  getUserByUserId = async (userId: number): Promise<UserOutput | null> => {
     const userData = await User.findByPk(userId);
     return userData ? (userData.toJSON() as UserOutput) : null;
-  };
-
-  getUserAuthByUsername = async (
-    username: string
-  ): Promise<Auth | null> => {
-    const userData = await Auth.findOne({ where: { username } });
-    return userData;
   };
 
   getAllUsers = async (): Promise<UserOutput[] | null> => {
@@ -23,9 +15,7 @@ class UserRepository {
     return userData.map((user) => user.toJSON() as UserOutput);
   };
 
-  getSearchedUsers = async (
-    name: string
-  ): Promise<UserOutput[] | null> => {
+  getSearchedUsers = async (name: string): Promise<UserOutput[] | null> => {
     const userData = await User.findAll({
       where: {
         [Op.or]: [
@@ -45,6 +35,11 @@ class UserRepository {
     return userData.map((user) => user.toJSON() as UserOutput);
   };
 
+  getUserAuthByUsername = async (username: string): Promise<Auth | null> => {
+    const userData = await Auth.findOne({ where: { username } });
+    return userData;
+  };
+
   updateUserByUserId = async (
     userId: number,
     userBody: { name?: string; email?: string }
@@ -56,9 +51,7 @@ class UserRepository {
     return userData;
   };
 
-  deleteUserByUserId = async (
-    userId: number
-  ): Promise<void> => {
+  deleteUserByUserId = async (userId: number): Promise<void> => {
     const transactionInstance = await sequelize.transaction();
     try {
       await User.destroy({

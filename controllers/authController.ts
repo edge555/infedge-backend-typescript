@@ -1,8 +1,8 @@
-import { Request, Response, NextFunction } from "express";
-import {sendResponse} from "../utils/sendResponse";
-import { sendResponseWithJwtToken } from "../utils/jwtHandler";
+import { Request, Response, NextFunction } from 'express';
+import { sendResponse } from '../utils/sendResponse';
+import { sendResponseWithJwtToken } from '../utils/jwtHandler';
 
-import AuthService from "../services/authService";
+import AuthService from '../services/authService';
 const authService = new AuthService();
 
 // Create and Save a new User
@@ -20,14 +20,7 @@ export const signUpUser = async (
       password,
     };
     const authData = await authService.signUpUser(data);
-    sendResponse(
-      req,
-      res,
-      201,
-      authData,
-      "User Created",
-      "Success"
-    );
+    sendResponse(req, res, 201, authData, 'User Created', 'Success');
   } catch (error) {
     next(error);
   }
@@ -46,14 +39,7 @@ export const loginUser = async (
       password,
     };
     const userData = await authService.loginUser(data);
-    sendResponseWithJwtToken(
-      req,
-      res,
-      200,
-      userData,
-      "Logged In",
-      "Success"
-    );
+    sendResponseWithJwtToken(req, res, 200, userData, 'Logged In', 'Success');
   } catch (error) {
     next(error);
   }

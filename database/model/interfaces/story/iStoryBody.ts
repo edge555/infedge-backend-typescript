@@ -1,5 +1,5 @@
 interface storyBody {
-    title: string;
-    description: string;
+  title: string;
+  description: string;
 }
 export default storyBody;

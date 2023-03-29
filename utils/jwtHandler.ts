@@ -1,12 +1,15 @@
-const jwt = require("jsonwebtoken");
-import { Request, Response } from "express";
-import iUserBodyToken from "../database/model/interfaces/user/iUserBodyToken";
-const { sendResponse } = require("../utils/sendResponse");
+import { Request, Response } from 'express';
+const jwt = require('jsonwebtoken');
+const { sendResponse } = require('../utils/sendResponse');
 
+import iUserBodyToken from '../database/model/interfaces/user/iUserBodyToken';
 
 const signToken = (userBody: iUserBodyToken): string => {
-  return jwt.sign({ user: userBody }, process.env.JWT_SECRET!, {
-    expiresIn: process.env.JWT_EXPIRES_IN!,
+  if (!process.env.JWT_SECRET || !process.env.JWT_EXPIRES_IN) {
+    throw new Error('JWT environment variables not defined');
+  }
+  return jwt.sign({ user: userBody }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRES_IN,
   });
 };
 
