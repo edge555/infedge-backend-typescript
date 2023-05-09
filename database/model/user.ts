@@ -1,12 +1,13 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 const sequelizeConnection = require('../dbConnect');
+
 interface UserAttributes {
-  id: number;
+  id: string;
   username: string;
   name: string;
   email: string;
   role: number;
-  lastModifierId: number;
+  lastModifierId: string;
   lastModificationTime: Date;
   passwordLastModificationTime: Date;
 }
@@ -16,12 +17,12 @@ export type UserInput = Optional<UserAttributes, 'id' | 'role'>;
 export type UserOutput = Required<UserAttributes>;
 
 class User extends Model<UserAttributes, UserInput> implements UserAttributes {
-  public id!: number;
+  public id!: string;
   public username!: string;
   public name!: string;
   public email!: string;
   public role!: number;
-  public lastModifierId!: number;
+  public lastModifierId!: string;
   public lastModificationTime!: Date;
   public passwordLastModificationTime!: Date;
   // timestamp
@@ -32,8 +33,8 @@ class User extends Model<UserAttributes, UserInput> implements UserAttributes {
 User.init(
   {
     id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
     },
     username: {
@@ -55,7 +56,7 @@ User.init(
       defaultValue: 0,
     },
     lastModifierId: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
       allowNull: false,
     },
     lastModificationTime: {

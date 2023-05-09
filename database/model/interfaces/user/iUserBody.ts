@@ -1,10 +1,10 @@
 interface iUserBody {
-  id: number;
+  id: string;
   username: string;
   name: string;
   email: string;
   role?: number;
-  lastModifierId: number;
+  lastModifierId: string;
   lastModificationTime: Date;
   passwordLastModificationTime: Date;
   token?: string;

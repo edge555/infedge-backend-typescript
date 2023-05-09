@@ -1,13 +1,14 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 const sequelizeConnection = require('../dbConnect');
+
 interface StoryAttributes {
-  id: number;
+  id: string;
   title: string;
   description: string;
   authorUserName: string;
   authorName: string;
-  authorId: number;
-  lastModifierId: number;
+  authorId: string;
+  lastModifierId: string;
   lastModificationTime: Date;
 }
 
@@ -19,13 +20,13 @@ class Story
   extends Model<StoryAttributes, StoryInput>
   implements StoryAttributes
 {
-  public id!: number;
+  public id!: string;
   public title!: string;
   public description!: string;
   public authorUserName!: string;
   public authorName!: string;
-  public authorId!: number;
-  public lastModifierId!: number;
+  public authorId!: string;
+  public lastModifierId!: string;
   public lastModificationTime!: Date;
   // timestamp
   public readonly createdAt!: Date;
@@ -35,8 +36,8 @@ class Story
 Story.init(
   {
     id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
     },
     title: {
@@ -56,11 +57,12 @@ Story.init(
       defaultValue: 0,
     },
     authorId: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
       allowNull: false,
     },
     lastModifierId: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
+      allowNull: false,
     },
     lastModificationTime: {
       type: DataTypes.DATE,

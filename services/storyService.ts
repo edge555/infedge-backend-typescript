@@ -32,7 +32,7 @@ class StoryService {
     return storyData;
   };
 
-  getStoryByStoryId = async (storyId: number): Promise<StoryOutput> => {
+  getStoryByStoryId = async (storyId: string): Promise<StoryOutput> => {
     if (storyId == null) {
       throw new AppError('Bad request', 400);
     }
@@ -63,11 +63,11 @@ class StoryService {
     return storyData;
   };
 
-  getAuthorIdByStoryId = async (storyId: number): Promise<number> => {
+  getAuthorIdByStoryId = async (storyId: string): Promise<string> => {
     if (storyId == null) {
       throw new AppError('Something went wrong', 500);
     }
-    const authorId: number | null =
+    const authorId: string | null =
       await this.storyRepository.getAuthorIdByStoryId(storyId);
     if (authorId == null) {
       throw new AppError('No Story was found with that ID', 404);
@@ -76,7 +76,7 @@ class StoryService {
   };
 
   updateStoryByStoryId = async (
-    storyId: number,
+    storyId: string,
     storyBody: { title?: string; description?: string }
   ): Promise<StoryOutput> => {
     if (storyId == null) {
@@ -90,7 +90,7 @@ class StoryService {
     return updatedStory;
   };
 
-  deleteStoryByStoryId = async (storyId: number): Promise<void> => {
+  deleteStoryByStoryId = async (storyId: string): Promise<void> => {
     if (storyId == null) {
       throw new AppError('Bad request', 400);
     }

@@ -23,9 +23,9 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use('/api/auth', authRouter);
-app.use('/api/user', userRouter);
-app.use('/api/story', storyRouter);
+app.use('/auth', authRouter);
+app.use('/user', userRouter);
+app.use('/story', storyRouter);
 
 const db = require('./database/dbconfig');
 db();

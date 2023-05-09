@@ -41,7 +41,7 @@ export const Protect = async (
       return next(new AppError(`You don't have the permission`, 403));
     }
     if (req.params.id) {
-      const id = parseInt(req.params.id);
+      const id = req.params.id;
       const authorId = await storyService.getAuthorIdByStoryId(id);
       if (!authorId) {
         return next(new AppError(`The story doesn't exist`, 401));

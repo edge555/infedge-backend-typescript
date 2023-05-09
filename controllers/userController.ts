@@ -16,7 +16,7 @@ export const getUserByUserId = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const id = parseInt(req.params.id);
+    const id = req.params.id;
     const userData = await userService.getUserByUserId(id);
     sendResponse(req, res, 200, userData, 'User Found', 'Success');
   } catch (error) {
@@ -60,7 +60,7 @@ export const updateUserByUserId = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const id = parseInt(req.params.id);
+    const id = req.params.id;
     const userBody = req.body;
     userBody.lastModifierId = req.user.id;
     const userData = await userService.updateUserByUserId(id, userBody);
@@ -77,7 +77,7 @@ export const deleteUserByUserId = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const id = parseInt(req.params.id);
+    const id = req.params.id;
     await userService.deleteUserByUserId(id);
     sendResponse(req, res, 204, {}, 'User Deleted', 'Success');
   } catch (error) {

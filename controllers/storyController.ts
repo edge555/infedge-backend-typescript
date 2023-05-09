@@ -30,7 +30,7 @@ export const getStoryByStoryId = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const id = parseInt(req.params.id);
+    const id = req.params.id;
     const storyData = await storyService.getStoryByStoryId(id);
     sendResponse(req, res, 200, storyData, 'Story Found', 'Success');
   } catch (error) {
@@ -73,7 +73,7 @@ export const updateStoryByStoryId = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const id = parseInt(req.params.id);
+    const id = req.params.id;
     const storyBody = req.body;
     storyBody.lastModifierId = req.user.id;
     const storyData = await storyService.updateStoryByStoryId(id, storyBody);
@@ -90,7 +90,7 @@ export const deleteStoryByStoryId = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const id = parseInt(req.params.id);
+    const id = req.params.id;
     await storyService.deleteStoryByStoryId(id);
     sendResponse(req, res, 204, {}, 'Story Deleted', 'Success');
   } catch (error) {

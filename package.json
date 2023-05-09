@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "@types/cors": "^2.8.13",
+    "@types/uuid": "^9.0.1",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.1",
     "circular-json": "^0.5.9",
@@ -15,7 +16,8 @@
     "pg": "^8.8.0",
     "postgres": "^3.3.3",
     "sequelize": "^6.28.0",
-    "ts-node": "^10.9.1"
+    "ts-node": "^10.9.1",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",

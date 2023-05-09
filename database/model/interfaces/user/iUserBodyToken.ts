@@ -1,6 +1,6 @@
 interface userBodyToken {
   token?: string;
-  id: number;
+  id: string;
   username: string;
   passwordLastModificationTime: Date;
 }

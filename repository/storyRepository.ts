@@ -9,7 +9,7 @@ class StoryRepository {
     return storyData.toJSON() as StoryOutput;
   }
 
-  async getStoryByStoryId(storyId: number): Promise<StoryOutput | null> {
+  async getStoryByStoryId(storyId: string): Promise<StoryOutput | null> {
     const storyData = await Story.findByPk(storyId);
     return storyData?.toJSON() as StoryOutput | null;
   }
@@ -39,13 +39,13 @@ class StoryRepository {
     return storyData.map((story) => story.toJSON() as StoryOutput);
   }
 
-  async getAuthorIdByStoryId(storyId: number): Promise<number | null> {
+  async getAuthorIdByStoryId(storyId: string): Promise<string | null> {
     const storyData = await Story.findByPk(storyId);
     return storyData?.authorId || null;
   }
 
   async updateStoryByStoryId(
-    storyId: number,
+    storyId: string,
     storyBody: { title?: string; description?: string }
   ): Promise<[number, StoryOutput]> {
     const storyData = await Story.update(storyBody, { where: { id: storyId } });
@@ -53,7 +53,7 @@ class StoryRepository {
     return [storyData[0], updatedStoryData as StoryOutput];
   }
 
-  async deleteStoryByStoryId(storyId: number): Promise<number> {
+  async deleteStoryByStoryId(storyId: string): Promise<number> {
     const rowsDeleted = await Story.destroy({ where: { id: storyId } });
     return rowsDeleted;
   }

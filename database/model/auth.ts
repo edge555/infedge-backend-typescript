@@ -1,7 +1,8 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 const sequelizeConnection = require('../dbConnect');
+
 interface AuthAttributes {
-  id: number;
+  id: string;
   username: string;
   email: string;
   password: string;
@@ -12,7 +13,7 @@ export type AuthInput = Optional<AuthAttributes, 'id'>;
 export type AuthOuput = Required<AuthAttributes>;
 
 class Auth extends Model<AuthAttributes, AuthInput> implements AuthAttributes {
-  public id!: number;
+  public id!: string;
   public username!: string;
   public email!: string;
   public password!: string;
@@ -25,8 +26,8 @@ class Auth extends Model<AuthAttributes, AuthInput> implements AuthAttributes {
 Auth.init(
   {
     id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
     },
     username: {
@@ -34,7 +35,6 @@ Auth.init(
       allowNull: false,
       unique: true,
     },
-
     email: {
       type: DataTypes.STRING,
       allowNull: false,

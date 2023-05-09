@@ -62,7 +62,7 @@ export const isAuthorized = async (
   next: NextFunction
 ) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = req.params.id;
     const user = await userService.getUserByUserId(id);
     if (!user) {
       return next(new AppError('No user was found with that ID', 404));

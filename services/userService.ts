@@ -10,7 +10,7 @@ class UserService {
     this.userRepository = new UserRepository();
   }
 
-  getUserByUserId = async (userId: number): Promise<UserOutput> => {
+  getUserByUserId = async (userId: string): Promise<UserOutput> => {
     if (userId == null) {
       throw new AppError('Bad request', 400);
     }
@@ -39,7 +39,7 @@ class UserService {
   };
 
   updateUserByUserId = async (
-    userId: number,
+    userId: string,
     userBody: { name?: string; email?: string }
   ): Promise<[number, UserOutput[]]> => {
     if (userId == null) {
@@ -55,7 +55,7 @@ class UserService {
     return userData;
   };
 
-  deleteUserByUserId = async (userId: number): Promise<void> => {
+  deleteUserByUserId = async (userId: string): Promise<void> => {
     if (userId == null) {
       throw new AppError('Bad request', 400);
     }

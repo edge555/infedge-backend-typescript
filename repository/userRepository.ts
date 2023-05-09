@@ -5,7 +5,7 @@ import Auth from '../database/model/auth';
 import User, { UserOutput } from '../database/model/user';
 
 class UserRepository {
-  getUserByUserId = async (userId: number): Promise<UserOutput | null> => {
+  getUserByUserId = async (userId: string): Promise<UserOutput | null> => {
     const userData = await User.findByPk(userId);
     return userData ? (userData.toJSON() as UserOutput) : null;
   };
@@ -41,7 +41,7 @@ class UserRepository {
   };
 
   updateUserByUserId = async (
-    userId: number,
+    userId: string,
     userBody: { name?: string; email?: string }
   ): Promise<[number, UserOutput[]]> => {
     const userData = await User.update(userBody, {
@@ -51,7 +51,7 @@ class UserRepository {
     return userData;
   };
 
-  deleteUserByUserId = async (userId: number): Promise<void> => {
+  deleteUserByUserId = async (userId: string): Promise<void> => {
     const transactionInstance = await sequelize.transaction();
     try {
       await User.destroy({
